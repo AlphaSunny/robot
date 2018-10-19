@@ -13,7 +13,7 @@ import threading
 
 
 
-url = "http://ccvt_test.fnying.com/api"
+url = "http://ccvt.io/api"
 
 class Robot(object):
     def __init__(self, bot):
