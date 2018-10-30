@@ -10,46 +10,151 @@ import oss2
 # import random
 # import base64
 import threading
+import djgo.common as a
+import base64
 
 
 
-url = "http://ccvt.io/api"
+url = a.url()
 
 class Robot(object):
     def __init__(self, bot):
         self.bot = bot
-
+        self.t1 = ''
+        self.t2 = ''
+        self.t3 = ''
+        self.t4 = ''
+        self.t5 = ''
+        self.t6 = ''
     #聊天
     def send_to_message(self):
 
-        # 生成本地group json文件，因为下面的进程会卡死，所以先生成一次
-        self.set_group_json_first()
-
-        #个人图灵机器人
-        self.sel_this_day_info()
-
-        #群聊图灵机器人
-       # self.start_record_bot()
-
-        # 收集群聊信息
-        group_list = self.get_group_json()
-        for name in group_list:
-            self.start_record_bot(name['name'])
+        # fi = self.bot.friends().search('Gavin')[0]
+        # print(fi)
+        # fi.set_remark_name("宋")
+        #
+        # fri = self.bot.friends()
+        # for frinend in fri:
+        #     print(frinend)
 
 
-        #循环调用接口生成json,循环调用json判断时间
-        #注：不能写t1 = threading.Thread(target=self.set_timer())
-        threads = []
-        t1 = threading.Thread(target=self.set_timer)
-        threads.append(t1)
-        t2 = threading.Thread(target=self.timer_run)
-        threads.append(t2)
-        t3 = threading.Thread(target=self.judge_group_or_same)
-        threads.append(t3)
-        for t in threads:
-            t.start()
-        for t in threads:
-            t.join()
+
+        data = request.urlopen(url + "/bot/get_qrcode.php").read()
+        data_json = json.loads(data.decode("utf-8"))
+        dict = data_json['rows']
+        if int(dict['robot_alive']) != 1:
+
+            # 生成本地group json文件，因为下面的进程会卡死，所以先生成一次
+            self.set_group_json_first()
+
+            # 添加好友
+            self.add_friends()
+
+            #个人图灵机器人
+            self.sel_frind_message()
+
+            #群聊图灵机器人
+            #self.start_record_bot()
+
+            # 收集群聊信息
+            all = []
+            all_groups = self.bot.groups()
+            for group_name in all_groups:
+                all.insert(0, group_name.name)
+            group_list = self.get_group_json()
+            for name in group_list:
+                if name['name'] in all:
+                    self.start_record_bot(name['name'])
+
+
+            #循环调用接口生成json,循环调用json判断时间
+            #注：不能写t1 = threading.Thread(target=self.set_timer())
+            threads = []
+            self.t1 = threading.Thread(target=self.set_timer)
+            threads.append(self.t1)
+            self.t2 = threading.Thread(target=self.timer_run)
+            threads.append(self.t2)
+            self.t3 = threading.Thread(target=self.judge_group_or_same)
+            threads.append(self.t3)
+            self.t4 = threading.Thread(target=self.check_login)
+            threads.append(self.t4)
+            self.t5 = threading.Thread(target=self.send_money_to_ccvt)
+            threads.append(self.t5)
+            self.t6 = threading.Thread(target=self.storage_members)
+            threads.append(self.t6)
+            for t in threads:
+                t.start()
+            for t in threads:
+                t.join()
+
+
+    #存储群成员(5分钟更新一次)
+    def storage_members(self):
+        while True:
+            all = []
+            all_groups = self.bot.groups()
+            for group_name in all_groups:
+                all.insert(0, group_name.name)
+            group_list = self.get_group_json()
+            for name in group_list:
+                if name['name'] in all:
+                    #先删除
+                    params = parse.urlencode({'group_id': name['id']})
+                    request.urlopen(url + "/bot/del_storage_members.php?%s" % params)
+
+                    group = self.bot.groups().search(name['name'])[0]
+                    group.update_group
+                    for g in group.members:
+                        #存储
+                        params = parse.urlencode(
+                            {'name': g.name, 'group_name': name['name'], 'group_id': name['id']})
+                        urls = url + "/bot/storage_members.php?%s" % params
+                        request.urlopen(urls)
+
+            time.sleep(300)
+
+
+
+
+
+
+    #登录状态判断
+    def check_login(self):
+        while True:
+            if self.bot.alive == True:
+                status = 1
+            else:
+                status = 2
+
+            params = parse.urlencode({'robot_alive': status})
+            request.urlopen(url + "/bot/bot_alive.php?%s" % params)
+
+            #判断微信退出，线程退出,发送验证码通知
+            if status == 2:
+                request.urlopen(url + "/bot/send_message.php").read()
+
+                self.t1.stop()
+                self.t2.stop()
+                self.t3.stop()
+                self.t4.stop()
+                self.t5.stop()
+                self.t6.stop()
+
+
+            time.sleep(60)
+
+
+
+    # 每天凌晨一点执行送币（昨天的）
+    def send_money_to_ccvt(self):
+        while True:
+            now = datetime.datetime.now()
+            if now.hour == 22 and now.minute == 10:
+                request.urlopen(url + "/crontab/send_money_ccvt.php").read()
+            # 每隔60秒检测一次
+            time.sleep(60)
+
+
 
     # 每30秒判断一次接口最新数据库与本地生成的json是否相同，不同的数据，生成群聊对象
     def judge_group_or_same(self):
@@ -72,9 +177,16 @@ class Robot(object):
                 name.insert(0, i['name'])
                 ba_id.insert(0, i['ba_id'])
 
+            #所有群组
+            all = []
+            all_groups = self.bot.groups()
+            for group_name in all_groups:
+                all.insert(0, group_name.name)
+
             for a in dict2:
                 if (a['id'] not in id) or (a['name'] not in name) or (a['ba_id'] not in ba_id):
-                    self.start_record_bot(a['name'])
+                    if a['name'] in all:
+                        self.start_record_bot(a['name'])
 
             #更新json文件
             self.set_group_json_first()
@@ -112,34 +224,45 @@ class Robot(object):
             a = time.localtime()
             week = time.strftime("%A", a)
             date_of = datetime.datetime.now().strftime('%Y-%m-%d')
+
             da = []
             for i in dat:
                 da.insert(0, i['date'])
 
-            if (week not in da) or (date_of not in da):
 
-                group_list = self.get_group_json()
-                for name in group_list:
-                    groups = self.bot.groups()
-                    group = groups.search(name['name'])[0]
-                    now = datetime.datetime.now()
-                    rows = self.get_timer()
-                    for i in rows:
-                        h = int(i['time'].split(":")[0])
-                        m = int(i['time'].split(":")[1])
-                        # s = int(i['time'].split(":")[-1])
-                        # print(h, m, s)
-                        if now.hour == h and now.minute == m and name['id'] == i['group_id'] and int(name['is_del']) == 1:
-                            if now.hour == 22:
-                                params = parse.urlencode({'group_name': name['name']})
-                                data = request.urlopen(url+"/bot/search_chat.php?%s" % params).read()
-                                data_json = json.loads(data.decode("utf-8"))
-                                content = i['content'] + "，今日聊天记录查看地址:" + data_json['url']
-                            else:
-                                content = i['content']
+            if week not in da:
 
-                            group.send(content)
-                            break
+                if date_of not in da:
+                    # 所有群组
+                    all = []
+                    all_groups = self.bot.groups()
+                    for group_name in all_groups:
+                        all.insert(0, group_name.name)
+
+                    group_list = self.get_group_json()
+                    for name in group_list:
+
+                        if name['name'] in all:
+
+                            group = self.bot.groups().search(name['name'])[0]
+                            now = datetime.datetime.now()
+                            rows = self.get_timer()
+                            for i in rows:
+                                h = int(i['time'].split(":")[0])
+                                m = int(i['time'].split(":")[1])
+                                # s = int(i['time'].split(":")[-1])
+                                # print(h, m, s)
+                                if now.hour == h and now.minute == m and name['id'] == i['group_id'] and int(name['is_del']) == 1:
+                                    if now.hour == 22:
+                                        params = parse.urlencode({'group_name': name['name']})
+                                        data = request.urlopen(url+"/bot/search_chat.php?%s" % params).read()
+                                        data_json = json.loads(data.decode("utf-8"))
+                                        content = i['content'] + "，今日聊天记录查看地址:" + data_json['url']
+                                    else:
+                                        content = i['content']
+
+                                    group.send(content)
+                                    break
             time.sleep(60)
 
 
@@ -196,7 +319,14 @@ class Robot(object):
        record_group = self.bot.groups().search(name)[0]
        @self.bot.register(record_group)
        def forward_boss_message(msg):
-           #print(msg.raw)
+
+           # self.bot.enable_puid('wxpy_puid.pkl')
+           # print(msg)
+           # f = self.bot.friends().search(msg.raw['ActualNickName'])[0]
+           # print(f)
+           # print(f.puid)
+           # print(msg.raw)
+
 
            gr = self.get_group_json()
            for g in gr:
@@ -266,17 +396,63 @@ class Robot(object):
        #print(params)
        request.urlopen(url+"/bot/collect_message.php?%s" % params)
 
-    #尬聊
-    def sel_this_day_info(self):
+    #好友聊天信息
+    def sel_frind_message(self):
         @self.bot.register(Friend, msg_types=TEXT)
         def sel_friend(msg):
-            if (msg.type == 'Text'):
+            # print(msg.sender.name)
+            # print(msg.sender.remark_name)
+
+            if (msg.raw['Type'] == 'Text'):
                 ret = self.auto_ai(msg.text)
             else:
                 ret = '[奸笑][奸笑]'
 
-            print('[发送]' + str(ret))
+            try:
+                my_friend = self.bot.friends().search(msg.sender.name)[0]
+                path = "./static/" + msg.sender.name + ".jpg"
+                my_friend.get_avatar(path)
+
+                # 上传到阿里云
+                path = self.oss_upload('img/' + msg.sender.name + ".jpg", path)
+
+                # 删除本地图片
+                os.remove(path)
+            except:
+                path = ''
+
+
+            if msg.raw['Type'] == "Picture" or msg.raw['Type'] == "Video" or msg.raw['Type'] == "Recording":
+                t = "./static/" + msg.raw['FileName']
+                msg.get_file(t)  # 下载图片，视频
+
+                # 上传到阿里云
+                content = self.oss_upload('img/' + msg.raw['FileName'], t)
+
+                # 删除本地文件
+                os.remove(t)
+            else:
+                content = msg.text
+            # 插入数据库
+            self.insert_message(msg.raw['CreateTime'], msg.sender.name, content, 'friend', 'friend', msg.raw['Type'], path)
+
+            # 插入数据库
+            self.insert_message(msg.raw['CreateTime'], "小助手", ret, 'friend', 'friend', msg.raw['Type'], '')
+
+           #print('[发送]' + str(ret))
             return ret
+
+    # 好友请求
+    def add_friends(self):
+        @self.bot.register(msg_types="Friends")
+        def auto_accept_friends(msg):
+            new_friend = msg.card.accept()
+            self.bot.enable_puid('wxpy_puid.pkl')
+            frind_puid = new_friend.puid
+            #new_friend.set_remark_name(new_friend.remark_name + "-" + frind_puid)
+            new_friend.set_remark_name(new_friend.remark_name)
+            #new_friend.send("你好，我是您的CCVT小助手，欢迎加入，您的CCVT账户代码是" + str(frind_puid))
+            new_friend.send("你好，我是您的CCVT小助手，欢迎加入")
 
     #图灵机器人
     def auto_ai(self, text):
