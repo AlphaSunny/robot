@@ -369,19 +369,19 @@ class Robot(object):
 
                    #判断调戏功能是否打开
                    if int(g['is_flirt']) == 1:
-                       if "@小助手" in msg.text:
-                           conte = msg.text.replace('@小助手', '')
+                       if "@风赢小助手" in msg.text:
+                           conte = msg.text.replace('@风赢小助手', '')
                            ret = self.auto_ai(conte)
 
                            try:
                                zhushou = self.bot.self          #获取机器人本身
-                               path2 = "./static/小助手.jpg"
+                               path2 = "./static/风赢小助手.jpg"
                                zhushou.get_avatar(path2)
                            except:
                                path2 = ''
 
                            # 插入数据库
-                           self.insert_message(msg.raw['CreateTime'], "小助手", ret, g['ba_id'], name, msg.raw['Type'], path2.lstrip('.'))
+                           self.insert_message(msg.raw['CreateTime'], "风赢小助手", ret, g['ba_id'], name, msg.raw['Type'], path2.lstrip('.'))
 
                            return ret
 
