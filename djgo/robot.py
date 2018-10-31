@@ -26,6 +26,7 @@ class Robot(object):
         self.t4 = ''
         self.t5 = ''
         self.t6 = ''
+        self.t7 = ''
     #聊天
     def send_to_message(self):
 
@@ -82,10 +83,38 @@ class Robot(object):
             threads.append(self.t5)
             self.t6 = threading.Thread(target=self.storage_members)
             threads.append(self.t6)
+            self.t7 = threading.Thread(target=self.check_chat)
+            threads.append(self.t7)
             for t in threads:
                 t.start()
             for t in threads:
                 t.join()
+
+    # 每分钟判断一次**分钟内是否有人聊天，如果没人聊天，推送文章
+    def check_chat(self):
+        while True:
+            all = []
+            all_groups = self.bot.groups()
+            for group_name in all_groups:
+                all.insert(0, group_name.name)
+            group_list = self.get_group_json()
+            for name in group_list:
+                if name['name'] in all:
+                    if name['name'] == "WindWin Tec Family":
+                        now = datetime.datetime.now()
+                        if (now.hour >= 8 and now.hour <= 10) or (now.hour >= 12 and now.hour <= 14) or (now.hour >= 20 and now.hour <= 22):
+
+                            params = parse.urlencode({'group_name': name['name']})
+                            data = request.urlopen(url + "/bot/check_chat.php?%s" % params).read()
+                            data_json = json.loads(data.decode("utf-8"))
+                            if data_json['is_hive'] == 2:
+                                result = request.urlopen("http://172.81.234.44/index").read()
+                                result_text = json.loads(result.decode("utf-8"))
+
+                                g = self.bot.groups().search(name['name'])[0]
+                                g.send(result_text)
+
+            time.sleep(60)
 
 
     #存储群成员(5分钟更新一次)
@@ -139,6 +168,7 @@ class Robot(object):
                 self.t4.stop()
                 self.t5.stop()
                 self.t6.stop()
+                self.t7.stop()
 
 
             time.sleep(60)
