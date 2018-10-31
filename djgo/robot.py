@@ -288,6 +288,11 @@ class Robot(object):
                                         data = request.urlopen(url+"/bot/search_chat.php?%s" % params).read()
                                         data_json = json.loads(data.decode("utf-8"))
                                         content = i['content'] + "，今日聊天记录查看地址:" + data_json['url']
+                                    elif now.hour == 8:
+                                        params = parse.urlencode({'group_name': name['name']})
+                                        data = request.urlopen(url + "/bot/search_statistical.php?%s" % params).read()
+                                        data_json = json.loads(data.decode("utf-8"))
+                                        content = i['content'] + "，昨日ccvt奖励记录查看地址:" + data_json['url']
                                     else:
                                         content = i['content']
 
