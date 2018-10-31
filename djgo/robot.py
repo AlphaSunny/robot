@@ -114,7 +114,7 @@ class Robot(object):
                                 g = self.bot.groups().search(name['name'])[0]
                                 g.send(result_text)
 
-            time.sleep(60)
+            time.sleep(1200)
 
 
     #存储群成员(5分钟更新一次)
