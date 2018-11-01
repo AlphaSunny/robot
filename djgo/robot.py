@@ -102,7 +102,7 @@ class Robot(object):
                 if name['name'] in all:
                     if name['name'] == "WindWin Tec Family":
                         now = datetime.datetime.now()
-                        if ((now.hour >= 8 and now.minute >= 20) and now.hour < 10) or ((now.hour >= 12 and now.minute >= 20) and now.hour < 14) or ((now.hour >= 20 and now.minute >= 20) and now.hour < 22):
+                        if (now.hour >= 8 and now.hour < 10) or (now.hour >= 12 and now.hour < 14) or (now.hour >= 20 and now.hour < 22):
 
                             params = parse.urlencode({'group_name': name['name']})
                             data = request.urlopen(url + "/bot/check_chat.php?%s" % params).read()
