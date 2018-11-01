@@ -108,11 +108,11 @@ class Robot(object):
                             data = request.urlopen(url + "/bot/check_chat.php?%s" % params).read()
                             data_json = json.loads(data.decode("utf-8"))
                             if data_json['is_hive'] == 2:
-                                result = request.urlopen("http://172.81.234.44/index").read()
+                                result = request.urlopen(url + "/bot/get_news.php").read()
                                 result_text = json.loads(result.decode("utf-8"))
 
                                 g = self.bot.groups().search(name['name'])[0]
-                                g.send(result_text)
+                                g.send(result_text['content'])
 
             time.sleep(1200)
 
