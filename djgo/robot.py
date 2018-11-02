@@ -259,17 +259,17 @@ class Robot(object):
             for i in dat:
                 da.insert(0, i['date'])
 
+            # 所有群组
+            all = []
+            all_groups = self.bot.groups()
+            for group_name in all_groups:
+                all.insert(0, group_name.name)
 
+            group_list = self.get_group_json()
             if week not in da:
 
                 if date_of not in da:
-                    # 所有群组
-                    all = []
-                    all_groups = self.bot.groups()
-                    for group_name in all_groups:
-                        all.insert(0, group_name.name)
 
-                    group_list = self.get_group_json()
                     for name in group_list:
 
                         if name['name'] in all:
@@ -298,6 +298,33 @@ class Robot(object):
 
                                     group.send(content)
                                     break
+            else:
+                for name in group_list:
+
+                    if name['name'] in all:
+                        group = self.bot.groups().search(name['name'])[0]
+                        now = datetime.datetime.now()
+                        rows = self.get_timer()
+                        for i in rows:
+                            h = int(i['time'].split(":")[0])
+                            m = int(i['time'].split(":")[1])
+
+                            if now.hour == h and now.minute == m and name['id'] == i['group_id'] and int(name['is_del']) == 1:
+                                if now.hour == 22:
+                                    params = parse.urlencode({'group_name': name['name']})
+                                    data = request.urlopen(url + "/bot/search_chat.php?%s" % params).read()
+                                    data_json = json.loads(data.decode("utf-8"))
+                                    content = i['content'] + "，今日聊天记录查看地址:" + data_json['url']
+                                    group.send(content)
+                                    break
+                                elif now.hour == 8:
+                                    params = parse.urlencode({'group_name': name['name']})
+                                    data = request.urlopen(url + "/bot/search_statistical.php?%s" % params).read()
+                                    data_json = json.loads(data.decode("utf-8"))
+                                    content = i['content'] + "，昨日ccvt奖励记录查看地址:" + data_json['url']
+                                    group.send(content)
+                                    break
+                                    
             time.sleep(60)
 
 
