@@ -317,14 +317,14 @@ class Robot(object):
                                     content = i['content'] + "，今日聊天记录查看地址:" + data_json['url']
                                     group.send(content)
                                     break
-                                elif now.hour == 8:
+                                elif now.hour == 12:
                                     params = parse.urlencode({'group_name': name['name']})
                                     data = request.urlopen(url + "/bot/search_statistical.php?%s" % params).read()
                                     data_json = json.loads(data.decode("utf-8"))
-                                    content = i['content'] + "，昨日ccvt奖励记录查看地址:" + data_json['url']
+                                    content = "大家周末好，早上睡懒觉迟到了😝，不好意思" + "，昨日ccvt奖励记录查看地址:" + data_json['url']
                                     group.send(content)
                                     break
-                                    
+
             time.sleep(60)
 
 
