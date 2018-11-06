@@ -447,6 +447,15 @@ class Robot(object):
 
                            return ret
 
+                   # 判断是否已经绑定ccvt账号，没绑定通知下
+                   if name == '风赢科技绝密小分队':
+                       params = parse.urlencode({'nickname': msg.raw['ActualNickName']})
+                       data = request.urlopen(url + "/bot/notice_records.php?%s" % params).read()
+                       data_json = json.loads(data.decode("utf-8"))
+                       if data_json['status'] == 2:
+                           res = "@" + msg.raw['ActualNickName'] + ",您的昵称未绑定ccvt账户，请前往http://ccvt.io绑定"
+                           return res
+
 
 
     # 插入数据库
