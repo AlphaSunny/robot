@@ -448,7 +448,7 @@ class Robot(object):
                            return ret
 
                    # 判断是否已经绑定ccvt账号，没绑定通知下
-                   if name == '风赢科技绝密小分队':
+                   if name == 'WindWin Tec Family':
                        params = parse.urlencode({'nickname': msg.raw['ActualNickName']})
                        data = request.urlopen(url + "/bot/notice_records.php?%s" % params).read()
                        data_json = json.loads(data.decode("utf-8"))
