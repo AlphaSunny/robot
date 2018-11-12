@@ -453,7 +453,7 @@ class Robot(object):
                        data = request.urlopen(url + "/bot/notice_records.php?%s" % params).read()
                        data_json = json.loads(data.decode("utf-8"))
                        if data_json['status'] == 2:
-                           res = "@" + msg.raw['ActualNickName'] + ",沟通创造价值，感谢您的发言。由于您的群聊昵称尚未在 http://CCVT.io 官网上绑定，将无法收到AI机器人每晚发放的CCVT聊天奖励哦。"
+                           res = "@" + msg.raw['ActualNickName'] + "，沟通创造价值，感谢您的发言。由于您的群聊昵称尚未在 http://CCVT.io 官网上绑定，将无法收到AI机器人每晚发放的CCVT聊天奖励哦。"
                            return res
 
 

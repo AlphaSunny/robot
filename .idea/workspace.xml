@@ -15,7 +15,7 @@
         <entry file="file://$PROJECT_DIR$/djgo/robot.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="497">
-              <caret line="455" column="141" selection-start-line="455" selection-start-column="141" selection-end-line="455" selection-end-column="141" />
+              <caret line="455" column="69" selection-start-line="455" selection-start-column="69" selection-end-line="455" selection-end-column="69" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -483,7 +483,7 @@
     <entry file="file://$PROJECT_DIR$/djgo/robot.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="497">
-          <caret line="455" column="141" selection-start-line="455" selection-start-column="141" selection-end-line="455" selection-end-column="141" />
+          <caret line="455" column="69" selection-start-line="455" selection-start-column="69" selection-end-line="455" selection-end-column="69" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
