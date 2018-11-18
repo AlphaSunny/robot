@@ -100,7 +100,7 @@ class Robot(object):
             group_list = self.get_group_json()
             for name in group_list:
                 if name['name'] in all:
-                    if name['name'] == "WindWin Tec Family":
+                    if name['name'] == "CCVT创世首发群":
                         now = datetime.datetime.now()
                         if ((now.hour >= 8 and now.minute >= 20) and now.hour < 10) or ((now.hour >= 12 and now.minute >= 20) and now.hour < 14) or ((now.hour >= 20 and now.minute >= 20) and now.hour < 22):
 
@@ -448,7 +448,7 @@ class Robot(object):
                            return ret
 
                    # 判断是否已经绑定ccvt账号，没绑定通知下
-                   if name == 'WindWin Tec Family':
+                   if name == 'CCVT创世首发群':
                        params = parse.urlencode({'nickname': msg.raw['ActualNickName']})
                        data = request.urlopen(url + "/bot/notice_records.php?%s" % params).read()
                        data_json = json.loads(data.decode("utf-8"))
