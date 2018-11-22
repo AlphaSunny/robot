@@ -14,8 +14,8 @@
       <file leaf-file-name="robot.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/djgo/robot.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="821">
-              <caret line="324" column="71" selection-start-line="324" selection-start-column="57" selection-end-line="324" selection-end-column="71" />
+            <state relative-caret-position="436">
+              <caret line="300" column="36" selection-start-line="300" selection-start-column="36" selection-end-line="300" selection-end-column="36" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
               </folding>
@@ -483,8 +483,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/djgo/robot.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="821">
-          <caret line="324" column="71" selection-start-line="324" selection-start-column="57" selection-end-line="324" selection-end-column="71" />
+        <state relative-caret-position="436">
+          <caret line="300" column="36" selection-start-line="300" selection-start-column="36" selection-end-line="300" selection-end-column="36" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
