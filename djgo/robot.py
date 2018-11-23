@@ -298,8 +298,11 @@ class Robot(object):
                                     #     data = request.urlopen(url + "/bot/search_statistical.php?%s" % params).read()
                                     #     data_json = json.loads(data.decode("utf-8"))
                                     #     content = i['content'] + "，昨日ccvt奖励记录查看地址:" + data_json['url']
-                                    
+
                                     else:
+                                        params = parse.urlencode({'group_name': name['name']})
+                                        data = request.urlopen(url + "/bot/search_statistical.php?%s" % params).read()
+                                        data_json = json.loads(data.decode("utf-8"))
                                         content = i['content'] + "，昨日ccvt奖励记录查看地址:" + data_json['url']
 
                                     group.send(content)
@@ -328,6 +331,9 @@ class Robot(object):
                                 #     content = "大家周末好，" + "，昨日ccvt奖励记录查看地址:" + data_json['url']
                                 #     group.send(content)
                                 else:
+                                    params = parse.urlencode({'group_name': name['name']})
+                                    data = request.urlopen(url + "/bot/search_statistical.php?%s" % params).read()
+                                    data_json = json.loads(data.decode("utf-8"))
                                     content = i['content'] + "，昨日ccvt奖励记录查看地址:" + data_json['url']
 
                                 group.send(content)
