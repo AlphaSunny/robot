@@ -410,19 +410,19 @@ class Robot(object):
                # 判断群功能是否打开
                if name == g['name'] and int(g['is_del']) == 1:
 
-                   # try:
-                   #     my_friend = self.bot.friends().search(msg.raw['ActualNickName'])[0]
-                   #     path = "./static/" + msg.raw['ActualNickName'] + ".jpg"
-                   #     my_friend.get_avatar(path)
-                   #
-                   #     #上传到阿里云
-                   #     path = self.oss_upload('img/'+msg.raw['ActualNickName']+".jpg", path)
-                   #
-                   #     #删除本地图片
-                   #     os.remove(path)
-                   #
-                   # except:
-                   path = ''
+                   try:
+                       my_friend = self.bot.friends().search(msg.raw['ActualNickName'])[0]
+                       path = "./static/" + msg.raw['ActualNickName'] + ".jpg"
+                       my_friend.get_avatar(path)
+
+                       #上传到阿里云
+                       path = self.oss_upload('img/'+msg.raw['ActualNickName']+".jpg", path)
+
+                       #删除本地图片
+                       os.remove(path)
+
+                   except:
+                       path = ''
 
                    #如果是视频或者图片，下载图片，视频
                    if msg.raw['Type'] == "Picture" or msg.raw['Type'] == "Video" or msg.raw['Type'] == "Recording":
@@ -449,12 +449,12 @@ class Robot(object):
                            conte = msg.text.replace('@风赢小助手', '')
                            ret = self.auto_ai(conte)
 
-                           # try:
-                           #     zhushou = self.bot.self          #获取机器人本身
-                           #     path2 = "./static/风赢小助手.jpg"
-                           #     zhushou.get_avatar(path2)
-                           # except:
-                           path2 = ''
+                           try:
+                               zhushou = self.bot.self          #获取机器人本身
+                               path2 = "./static/风赢小助手.jpg"
+                               zhushou.get_avatar(path2)
+                           except:
+                               path2 = ''
 
                            # 插入数据库
                            self.insert_message(msg.raw['CreateTime'], "风赢小助手", ret, g['ba_id'], name, msg.raw['Type'], path2.lstrip('.'))
@@ -493,18 +493,18 @@ class Robot(object):
             else:
                 ret = '[奸笑][奸笑]'
 
-            # try:
-            #     my_friend = self.bot.friends().search(msg.sender.name)[0]
-            #     path = "./static/" + msg.sender.name + ".jpg"
-            #     my_friend.get_avatar(path)
-            #
-            #     # 上传到阿里云
-            #     path = self.oss_upload('img/' + msg.sender.name + ".jpg", path)
-            #
-            #     # 删除本地图片
-            #     os.remove(path)
-            # except:
-            path = ''
+            try:
+                my_friend = self.bot.friends().search(msg.sender.name)[0]
+                path = "./static/" + msg.sender.name + ".jpg"
+                my_friend.get_avatar(path)
+
+                # 上传到阿里云
+                path = self.oss_upload('img/' + msg.sender.name + ".jpg", path)
+
+                # 删除本地图片
+                os.remove(path)
+            except:
+                path = ''
 
 
             if msg.raw['Type'] == "Picture" or msg.raw['Type'] == "Video" or msg.raw['Type'] == "Recording":
