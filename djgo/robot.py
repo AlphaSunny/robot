@@ -487,17 +487,6 @@ class Robot(object):
             else:
                 ret = '[奸笑][奸笑]'
 
-            # try:
-            #     my_friend = self.bot.friends().search(msg.sender.name)[0]
-            #     path = "./static/" + msg.sender.name + ".jpg"
-            #     my_friend.get_avatar(path)
-            #
-            #     # 上传到阿里云
-            #     path = self.oss_upload('img/' + msg.sender.name + ".jpg", path)
-            #
-            #     # 删除本地图片
-            #     os.remove(path)
-            # except:
             path = ''
 
 
@@ -512,14 +501,15 @@ class Robot(object):
                 os.remove(t)
             else:
                 content = msg.text
+
+            return ret
             # 插入数据库
             self.insert_message(msg.raw['CreateTime'], msg.sender.name, content, 'friend', 'friend', msg.raw['Type'], path)
 
             # 插入数据库
             self.insert_message(msg.raw['CreateTime'], "小助手", ret, 'friend', 'friend', msg.raw['Type'], '')
 
-           #print('[发送]' + str(ret))
-            return ret
+            # return ret
 
     # 好友请求
     def add_friends(self):
