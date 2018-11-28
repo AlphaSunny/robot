@@ -410,18 +410,6 @@ class Robot(object):
                # 判断群功能是否打开
                if name == g['name'] and int(g['is_del']) == 1:
 
-                   # try:
-                   #     my_friend = self.bot.friends().search(msg.raw['ActualNickName'])[0]
-                   #     path = "./static/" + msg.raw['ActualNickName'] + ".jpg"
-                   #     my_friend.get_avatar(path)
-                   #
-                   #     #上传到阿里云
-                   #     path = self.oss_upload('img/'+msg.raw['ActualNickName']+".jpg", path)
-                   #
-                   #     #删除本地图片
-                   #     os.remove(path)
-                   #
-                   # except:
                    path = ''
 
                    #如果是视频或者图片，下载图片，视频
@@ -447,13 +435,19 @@ class Robot(object):
                    if int(g['is_flirt']) == 1:
                        if "@风赢小助手" in msg.text:
                            conte = msg.text.replace('@风赢小助手', '')
-                           ret = self.auto_ai(conte)
+                           conte = conte.replace('：', ':')
+                           conte1 = conte.split(':')[0].replace(' ', '')
+                           conte2 = conte.split(':')[1].replace(' ', '')
 
-                           # try:
-                           #     zhushou = self.bot.self          #获取机器人本身
-                           #     path2 = "./static/风赢小助手.jpg"
-                           #     zhushou.get_avatar(path2)
-                           # except:
+                           if "兑换码" in conte1:
+                               # 兑换码兑换
+                               params = parse.urlencode({'nickname': msg.raw['ActualNickName'], 'voucher': conte2})
+                               data = request.urlopen(url + "/bot/exchange_voucher.php?%s" % params).read()
+                               data_json = json.loads(data.decode("utf-8"))
+                               ret = data_json["errmsg"]
+                           else:
+                               ret = self.auto_ai(conte)
+
                            path2 = ''
 
                            # 插入数据库
