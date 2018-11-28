@@ -501,15 +501,13 @@ class Robot(object):
                 os.remove(t)
             else:
                 content = msg.text
-
-            return ret
             # 插入数据库
             self.insert_message(msg.raw['CreateTime'], msg.sender.name, content, 'friend', 'friend', msg.raw['Type'], path)
 
             # 插入数据库
             self.insert_message(msg.raw['CreateTime'], "小助手", ret, 'friend', 'friend', msg.raw['Type'], '')
 
-            # return ret
+            return ret
 
     # 好友请求
     def add_friends(self):
