@@ -30,15 +30,6 @@ class Robot(object):
     #聊天
     def send_to_message(self):
 
-        # fi = self.bot.friends().search('Gavin')[0]
-        # print(fi)
-        # fi.set_remark_name("宋")
-        #
-        # fri = self.bot.friends()
-        # for frinend in fri:
-        #     print(frinend)
-
-
 
         data = request.urlopen(url + "/bot/get_qrcode.php").read()
         data_json = json.loads(data.decode("utf-8"))
