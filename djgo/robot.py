@@ -435,7 +435,7 @@ class Robot(object):
                                data = request.urlopen(url + "/bot/exchange_voucher.php?%s" % params).read()
                                data_json = json.loads(data.decode("utf-8"))
                                ret = data_json["content"]
-                           elif conte == "话题" or conte == "最新话题" or conte == "今日话题":
+                           elif conte == "话题":
                                data = request.urlopen(url + "/bot/get_topic.php").read()
                                data_json = json.loads(data.decode("utf-8"))
                                ret = data_json["content"]
