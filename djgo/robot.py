@@ -427,7 +427,7 @@ class Robot(object):
                        if "@AI大白~" in msg.text:
                            conte = msg.text.replace('@AI大白~', '')
 
-                           huati = conte.replace(' ', '')
+                           huati = conte.strip()
 
                            if "兑换码" in conte and (":" in conte or "：" in conte):
                                conte = conte.replace('：', ':')
@@ -437,10 +437,11 @@ class Robot(object):
                                data = request.urlopen(url + "/bot/exchange_voucher.php?%s" % params).read()
                                data_json = json.loads(data.decode("utf-8"))
                                ret = data_json["content"]
-                           elif huati == "话题" or huati == "最新话题" or huati == "今日话题":
-                               data = request.urlopen(url + "/bot/get_topic.php").read()
+                           elif huati == "话题" or huati == "最新话题" or huati == "今日话题" or huati == "换个话题":
+                               params = parse.urlencode({'ask': huati, 'group_name': name})
+                               data = request.urlopen(url + "/bot/get_topic.php?%s" % params).read()
                                data_json = json.loads(data.decode("utf-8"))
-                               ret = "话题："+data_json["content"]
+                               ret = "话题：" + data_json["content"]
                            else:
                                ret = self.auto_ai(conte)
 
