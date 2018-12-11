@@ -424,8 +424,8 @@ class Robot(object):
 
                    #判断调戏功能是否打开
                    if int(g['is_flirt']) == 1:
-                       if "@风赢小助手" in msg.text:
-                           conte = msg.text.replace('@风赢小助手', '')
+                       if "@AI大白~" in msg.text:
+                           conte = msg.text.replace('@AI大白~', '')
 
                            if "兑换码" in conte and (":" in conte or "：" in conte):
                                conte = conte.replace('：', ':')
@@ -441,7 +441,7 @@ class Robot(object):
                            path2 = ''
 
                            # 插入数据库
-                           self.insert_message(msg.raw['CreateTime'], "风赢小助手", ret, g['ba_id'], name, msg.raw['Type'], path2.lstrip('.'))
+                           self.insert_message(msg.raw['CreateTime'], "AI大白~", ret, g['ba_id'], name, msg.raw['Type'], path2.lstrip('.'))
 
                            return ret
 
