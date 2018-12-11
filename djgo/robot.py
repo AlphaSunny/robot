@@ -434,7 +434,11 @@ class Robot(object):
                                params = parse.urlencode({'nickname': msg.raw['ActualNickName'], 'voucher': conte2})
                                data = request.urlopen(url + "/bot/exchange_voucher.php?%s" % params).read()
                                data_json = json.loads(data.decode("utf-8"))
-                               ret = data_json["errmsg"]
+                               ret = data_json["content"]
+                           elif conte == "话题" or conte == "最新话题" or conte == "今日话题":
+                               data = request.urlopen(url + "/bot/get_topic.php").read()
+                               data_json = json.loads(data.decode("utf-8"))
+                               ret = data_json["content"]
                            else:
                                ret = self.auto_ai(conte)
 
